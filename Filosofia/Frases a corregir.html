@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="es">
+<meta name="author" content="Miguel Navas Chinchilla">
+<meta name="generator" content="Filosofía, frases a corregir">
+<meta name="version" content="1.0">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Test: Criterios de Verdad Filosóficos</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fafafa;
+      color: #333;
+    }
+    h1, h2 {
+      color: #2c3e50;
+      text-align: center;
+    }
+    .question {
+      background: white;
+      padding: 18px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      border-left: 4px solid #3498db;
+    }
+    .question .original {
+      font-style: italic;
+      background-color: #f8f9fa;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+    .question h3 small {
+      font-weight: normal;
+      color: #7f8c8d;
+    }
+    .question .options {
+      margin-top: 10px;
+    }
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      margin-top: 6px;
+      font-size: 15px;
+    }
+    button {
+      display: block;
+      margin: 20px auto;
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #219653;
+    }
+    #result {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    .correct { color: #27ae60; }
+    .incorrect { color: #e74c3c; }
+    .feedback { margin-top: 6px; font-size: 14px; font-weight: bold; }
+    .correct-answer {
+      display: none;
+      color: #27ae60;
+      font-weight: normal;
+      margin-top: 8px;
+      padding: 8px;
+      background-color: #e8f5e9;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🔍 Test: Criterios de Verdad Filosóficos</h1>
+<p style="text-align: center;">Selecciona la mejor corrección para cada frase. Al final, pulsa <strong>Corregir</strong>.</p>
+
+<div id="quiz-container"></div>
+
+<div id="result"></div>
+
+<button id="check-btn">🔍 Corregir</button>
+<button id="reset-btn">🔁 Repetir Test (nuevas preguntas)</button>
+
+<script>
+  // ✅ ¡Aquí están los 50 ejemplos completos!
+  const allExamples = [
+    {
+      original: "Soy totalmente tolerante con todas las ideas, pero no puedo soportar a la gente que no piensa como yo.",
+      criterion: "Coherencia",
+      correct: "Soy tolerante con todas las ideas, incluso con aquellas con las que no estoy de acuerdo.",
+      options: [
+        "Soy tolerante con todas las ideas, incluso con aquellas con las que no estoy de acuerdo.",
+        "Soy tolerante, pero solo con las ideas que no atacan la tolerancia.",
+        "La tolerancia tiene límites, y no tolero la intolerancia de otros."
+      ]
+    },
+    {
+      original: "El universo es infinito, pero sabemos que terminará en algún punto.",
+      criterion: "Coherencia",
+      correct: "El universo podría ser finito o infinito, pero ambas ideas no pueden ser verdaderas al mismo tiempo.",
+      options: [
+        "El universo podría ser finito o infinito, pero ambas ideas no pueden ser verdaderas al mismo tiempo.",
+        "En un universo infinito, el 'final' puede ser un concepto relativo.",
+        "El infinito no impide que haya puntos de transición o ciclos."
+      ]
+    },
+    {
+      original: "Defiendo la libertad absoluta del individuo, por eso el Estado debe obligar a todos a ser buenos ciudadanos.",
+      criterion: "Coherencia",
+      correct: "Defiendo la libertad individual, pero reconozco que el Estado debe establecer límites mínimos para garantizar la convivencia.",
+      options: [
+        "Defiendo la libertad individual, pero reconozco que el Estado debe establecer límites mínimos para garantizar la convivencia.",
+        "La libertad absoluta es incompatible con la existencia de cualquier Estado.",
+        "La obligación estatal es necesaria para que la libertad sea real."
+      ]
+    },
+    {
+      original: "Nada es verdad, y eso que digo es una verdad absoluta.",
+      criterion: "Coherencia",
+      correct: "La afirmación ‘nada es verdad’ se contradice a sí misma y no puede sostenerse racionalmente.",
+      options: [
+        "La afirmación ‘nada es verdad’ se contradice a sí misma y no puede sostenerse racionalmente.",
+        "Solo hay verdades relativas, nunca absolutas.",
+        "La verdad existe, pero es inaccesible para los seres humanos."
+      ]
+    },
+    {
+      original: "El único conocimiento válido es el que se obtiene de la experiencia sensible, por eso sé que existen los conceptos abstractos como la justicia.",
+      criterion: "Coherencia",
+      correct: "Si el único conocimiento válido es el empírico, entonces no podemos afirmar con certeza la existencia de conceptos abstractos como la justicia sin una fundamentación adicional.",
+      options: [
+        "Si el único conocimiento válido es el empírico, entonces no podemos afirmar con certeza la existencia de conceptos abstractos como la justicia sin una fundamentación adicional.",
+        "La justicia se infiere de patrones observables en el comportamiento humano.",
+        "Los conceptos abstractos son construcciones útiles, no realidades objetivas."
+      ]
+    },
+    {
+      original: "Soy un individuo completamente autosuficiente que no necesita a nadie, pero exijo que la sociedad me proporcione todo lo que necesito.",
+      criterion: "Coherencia",
+      correct: "Si soy autosuficiente, no puedo depender de la sociedad para mis necesidades básicas; si las necesito, entonces no soy completamente autosuficiente.",
+      options: [
+        "Si soy autosuficiente, no puedo depender de la sociedad para mis necesidades básicas; si las necesito, entonces no soy completamente autosuficiente.",
+        "La autosuficiencia personal y la dependencia social pueden coexistir en distintos niveles.",
+        "La sociedad es una extensión natural del individuo autosuficiente."
+      ]
+    },
+    {
+      original: "El tiempo es una ilusión, pero debemos darnos prisa porque se nos acaba.",
+      criterion: "Coherencia",
+      correct: "Si el tiempo es una ilusión, entonces la urgencia de 'darse prisa' también lo es. No podemos actuar como si fuera real mientras lo negamos teóricamente.",
+      options: [
+        "Si el tiempo es una ilusión, entonces la urgencia de 'darse prisa' también lo es. No podemos actuar como si fuera real mientras lo negamos teóricamente.",
+        "El tiempo es una ilusión en lo absoluto, pero real en el plano de la experiencia cotidiana.",
+        "Aunque el tiempo sea subjetivo, sus efectos prácticos son reales para nosotros."
+      ]
+    },
+    {
+      original: "Todas las reglas tienen excepciones, excepto esta misma regla.",
+      criterion: "Coherencia",
+      correct: "La afirmación ‘todas las reglas tienen excepciones’ es autorreferencialmente inconsistente y debe reformularse para evitar su autodestrucción.",
+      options: [
+        "La afirmación ‘todas las reglas tienen excepciones’ es autorreferencialmente inconsistente y debe reformularse para evitar su autodestrucción.",
+        "Todas las reglas *normales* tienen excepciones, pero las reglas lógicas no.",
+        "Las reglas sobre reglas son de un orden superior y no se aplican a sí mismas."
+      ]
+    },
+    {
+      original: "2+2=4 es una verdad en nuestra cultura occidental, pero otras culturas pueden tener matemáticas donde el resultado sea diferente y también válido.",
+      criterion: "Universalidad",
+      correct: "2+2=4 es una verdad formal universal; no depende de la cultura, sino de las reglas de la aritmética.",
+      options: [
+        "2+2=4 es una verdad formal universal; no depende de la cultura, sino de las reglas de la aritmética.",
+        "Cada cultura tiene su propia lógica, y todas son igualmente válidas.",
+        "Los números son una construcción social, no una realidad objetiva."
+      ]
+    },
+    {
+      original: "Para ti puede ser cierto que la Tierra gira alrededor del Sol, pero para mí la verdad es que el Sol gira alrededor de la Tierra.",
+      criterion: "Universalidad",
+      correct: "Que la Tierra gira alrededor del Sol es un hecho científico verificable, no una cuestión de opinión personal.",
+      options: [
+        "Que la Tierra gira alrededor del Sol es un hecho científico verificable, no una cuestión de opinión personal.",
+        "Ambas visiones pueden coexistir en distintos marcos de referencia.",
+        "La astronomía es una interpretación, no una descripción literal."
+      ]
+    },
+    {
+      original: "La esclavitud era moralmente aceptable en la Antigua Roma, por lo tanto, no podemos juzgarla como incorrecta desde nuestra perspectiva actual.",
+      criterion: "Universalidad",
+      correct: "Podemos y debemos juzgar prácticas históricas como la esclavitud a la luz de principios universales como la dignidad humana.",
+      options: [
+        "Podemos y debemos juzgar prácticas históricas como la esclavitud a la luz de principios universales como la dignidad humana.",
+        "El juicio histórico debe ser empático, no moralizador.",
+        "Cada época tiene sus propios criterios morales válidos."
+      ]
+    },
+    {
+      original: "Esa teoría científica solo es válida para los científicos que creen en ella.",
+      criterion: "Universalidad",
+      correct: "La validez de una teoría científica depende de su coherencia, evidencia y capacidad predictiva, no de la creencia de quien la sostiene.",
+      options: [
+        "La validez de una teoría científica depende de su coherencia, evidencia y capacidad predictiva, no de la creencia de quien la sostiene.",
+        "La fe en una teoría puede ser un motor para su desarrollo, aunque no su prueba.",
+        "Las teorías científicas son consensos provisionales dentro de una comunidad."
+      ]
+    },
+    {
+      original: "Lo que es justo para un hombre es injusto para otro; no existe la justicia, solo intereses.",
+      criterion: "Universalidad",
+      correct: "La justicia, aunque difícil de definir, aspira a ser un principio universal que trasciende los intereses particulares.",
+      options: [
+        "La justicia, aunque difícil de definir, aspira a ser un principio universal que trasciende los intereses particulares.",
+        "La justicia es siempre la expresión del poder dominante.",
+        "Cada comunidad define su propia justicia, y ninguna es superior."
+      ]
+    },
+    {
+      original: "Ese argumento lógico te parece válido porque fuiste educado en la lógica aristotélica, pero no tiene por qué serlo para alguien de otra tradición.",
+      criterion: "Universalidad",
+      correct: "Las leyes de la lógica, como el principio de no contradicción, son condiciones necesarias para cualquier pensamiento racional coherente, independientemente de la tradición.",
+      options: [
+        "Las leyes de la lógica, como el principio de no contradicción, son condiciones necesarias para cualquier pensamiento racional coherente, independientemente de la tradición.",
+        "Existen lógicas no clásicas que cuestionan estos principios.",
+        "La lógica aristotélica es solo una de muchas formas de razonar."
+      ]
+    },
+    {
+      original: "La verdad es lo que cada uno siente como verdadero en su interior.",
+      criterion: "Universalidad",
+      correct: "La verdad no es un sentimiento, sino una propiedad de las proposiciones que se corresponden con la realidad o son coherentes dentro de un sistema racional.",
+      options: [
+        "La verdad no es un sentimiento, sino una propiedad de las proposiciones que se corresponden con la realidad o son coherentes dentro de un sistema racional.",
+        "La verdad personal, basada en la experiencia interior, es tan válida como cualquier otra.",
+        "Los sentimientos son una guía fiable hacia la verdad en asuntos existenciales."
+      ]
+    },
+    {
+      original: "Esta medicina funciona para mí, y eso es lo único que importa. No necesito estudios que demuestren que funciona para todos.",
+      criterion: "Universalidad",
+      correct: "La eficacia de una medicina debe demostrarse mediante estudios controlados y replicables, no mediante experiencias anecdotales, para ser considerada conocimiento científico válido.",
+      options: [
+        "La eficacia de una medicina debe demostrarse mediante estudios controlados y replicables, no mediante experiencias anecdotales, para ser considerada conocimiento científico válido.",
+        "La evidencia anecdótica es el primer paso hacia el descubrimiento científico.",
+        "Si funciona para mí, es suficiente para mi práctica personal."
+      ]
+    },
+    {
+      original: "El ser humano es malo por naturaleza. Es un hecho y punto.",
+      criterion: "Sistematicidad",
+      correct: "La afirmación de que el ser humano es 'malo por naturaleza' requiere una definición precisa de 'naturaleza' y 'malo', y debe integrarse en una antropología, ética y política coherentes.",
+      options: [
+        "La afirmación de que el ser humano es 'malo por naturaleza' requiere una definición precisa de 'naturaleza' y 'malo', y debe integrarse en una antropología, ética y política coherentes.",
+        "Se trata de una observación empírica sobre la historia humana.",
+        "Es una máxima práctica que resume una experiencia vital."
+      ]
+    },
+    {
+      original: "El único propósito de la vida es ser feliz.",
+      criterion: "Sistematicidad",
+      correct: "La felicidad puede ser un propósito de la vida, pero debe articularse dentro de un sistema ético que defina qué tipo de felicidad es valiosa y cómo se relaciona con otros bienes como la virtud o la justicia.",
+      options: [
+        "La felicidad puede ser un propósito de la vida, pero debe articularse dentro de un sistema ético que defina qué tipo de felicidad es valiosa y cómo se relaciona con otros bienes como la virtud o la justicia.",
+        "La vida no necesita un propósito único; la felicidad es solo una opción entre muchas.",
+        "El propósito de la vida es subjetivo y cada uno lo define como quiere."
+      ]
+    },
+    {
+      original: "La conciencia no es más que un producto químico del cerebro.",
+      criterion: "Sistematicidad",
+      correct: "La relación entre conciencia y cerebro es un problema filosófico complejo (mente-cuerpo) que no se resuelve con una afirmación reduccionista aislada, sino requiere un marco teórico que explique la emergencia de la subjetividad.",
+      options: [
+        "La relación entre conciencia y cerebro es un problema filosófico complejo (mente-cuerpo) que no se resuelve con una afirmación reduccionista aislada, sino requiere un marco teórico que explique la emergencia de la subjetividad.",
+        "La neurociencia ya ha demostrado que la conciencia es un epifenómeno cerebral.",
+        "La conciencia es un misterio que la ciencia nunca podrá explicar."
+      ]
+    },
+    {
+      original: "Simplemente hay cosas que pasan porque sí, sin causa ni explicación.",
+      criterion: "Sistematicidad",
+      correct: "El principio de razón suficiente sostiene que todo lo que acontece tiene una razón o causa; negarlo implica renunciar a la posibilidad de una explicación coherente del mundo.",
+      options: [
+        "El principio de razón suficiente sostiene que todo lo que acontece tiene una razón o causa; negarlo implica renunciar a la posibilidad de una explicación coherente del mundo.",
+        "La física cuántica muestra que algunos eventos son genuinamente acausales.",
+        "Aceptar la contingencia radical es una postura filosóficamente honesta."
+      ]
+    },
+    {
+      original: "La historia no tiene ningún sentido; solo es una sucesión de eventos aleatorios.",
+      criterion: "Sistematicidad",
+      correct: "Aunque la historia contenga elementos de azar, la filosofía de la historia busca patrones, causas estructurales y sentidos interpretativos que den coherencia al devenir humano.",
+      options: [
+        "Aunque la historia contenga elementos de azar, la filosofía de la historia busca patrones, causas estructurales y sentidos interpretativos que den coherencia al devenir humano.",
+        "La historia es caos, y cualquier sentido que le atribuimos es una proyección posterior.",
+        "Cada evento histórico es único e irrepetible, sin conexión con los demás."
+      ]
+    },
+    {
+      original: "La belleza es lo que te gusta y ya está, no hay más teoría.",
+      criterion: "Sistematicidad",
+      correct: "La belleza, aunque tenga un componente subjetivo, ha sido objeto de teorías sistemáticas que la relacionan con la forma, la proporción, la función o el contexto cultural.",
+      options: [
+        "La belleza, aunque tenga un componente subjetivo, ha sido objeto de teorías sistemáticas que la relacionan con la forma, la proporción, la función o el contexto cultural.",
+        "La belleza está en el ojo del que mira; no hay nada más que decir.",
+        "Las teorías de la belleza son intentos fallidos de objetivar lo subjetivo."
+      ]
+    },
+    {
+      original: "El bien es hacer lo que dicta la ley.",
+      criterion: "Sistematicidad",
+      correct: "El bien no se reduce a lo legal; una teoría ética debe poder fundamentar la justicia de las leyes y, si es necesario, justificar su desobediencia.",
+      options: [
+        "El bien no se reduce a lo legal; una teoría ética debe poder fundamentar la justicia de las leyes y, si es necesario, justificar su desobediencia.",
+        "En una democracia, la ley es la expresión del bien común.",
+        "El bien es obedecer la ley, pues garantiza el orden social."
+      ]
+    },
+    {
+      original: "Tuve una revelación y ahora sé con certeza cuál es el origen del universo.",
+      criterion: "Metodicidad",
+      correct: "Una revelación personal no basta como justificación racional; se requiere un método verificable y argumentado.",
+      options: [
+        "Una revelación personal no basta como justificación racional; se requiere un método verificable y argumentado.",
+        "Las revelaciones son la forma más profunda de conocimiento metafísico.",
+        "La intuición puede ser más fiable que la razón discursiva."
+      ]
+    },
+    {
+      original: "No puedo explicarte lógicamente por qué mi decisión es la correcta, pero tengo una fuerte intuición de que lo es.",
+      criterion: "Metodicidad",
+      correct: "Una intuición puede ser un punto de partida, pero su validez debe ser contrastada mediante un razonamiento lógico explícito y riguroso.",
+      options: [
+        "Una intuición puede ser un punto de partida, pero su validez debe ser contrastada mediante un razonamiento lógico explícito y riguroso.",
+        "En la toma de decisiones, la intuición es superior al análisis racional.",
+        "Algunas verdades son inefables y no pueden ser justificadas con palabras."
+      ]
+    },
+    {
+      original: "Sé que hay vida después de la muerte porque lo siento muy dentro de mí. Ese sentimiento es mi prueba.",
+      criterion: "Metodicidad",
+      correct: "Los sentimientos no son pruebas válidas para afirmaciones metafísicas; se requiere un método basado en argumentos y evidencias intersubjetivamente accesibles.",
+      options: [
+        "Los sentimientos no son pruebas válidas para afirmaciones metafísicas; se requiere un método basado en argumentos y evidencias intersubjetivamente accesibles.",
+        "La fe es una forma legítima de conocimiento en lo trascendente.",
+        "La certeza interior es la única garantía frente a la duda racional."
+      ]
+    },
+    {
+      original: "La solución al problema se me ocurrió en un sueño; por lo tanto, debe ser la correcta.",
+      criterion: "Metodicidad",
+      correct: "El origen de una idea (en un sueño, por ejemplo) es distinto de su validación, que exige un procedimiento lógico y demostrativo.",
+      options: [
+        "El origen de una idea (en un sueño, por ejemplo) es distinto de su validación, que exige un procedimiento lógico y demostrativo.",
+        "Las ideas que surgen en sueños suelen ser más creativas y profundas.",
+        "La inspiración divina no necesita ser validada por la razón humana."
+      ]
+    },
+    {
+      original: "No necesito un debate ni argumentos. El líder de nuestro movimiento dijo cómo son las cosas, y su visión es la que seguimos.",
+      criterion: "Metodicidad",
+      correct: "La verdad no se establece por decreto de autoridad, sino mediante un proceso de deliberación racional abierta a la crítica y el debate.",
+      options: [
+        "La verdad no se establece por decreto de autoridad, sino mediante un proceso de deliberación racional abierta a la crítica y el debate.",
+        "Un líder iluminado puede ver la verdad que otros no alcanzan.",
+        "En tiempos de crisis, la obediencia es más eficaz que el debate."
+      ]
+    },
+    {
+      original: "He llegado a esta conclusión tras asociar libremente varias ideas que me vinieron a la mente. El proceso fue caótico, pero el resultado es verdadero.",
+      criterion: "Metodicidad",
+      correct: "El conocimiento racional exige un método ordenado y riguroso, no una mera asociación libre de ideas, por sugerentes que estas sean.",
+      options: [
+        "El conocimiento racional exige un método ordenado y riguroso, no una mera asociación libre de ideas, por sugerentes que estas sean.",
+        "La creatividad surge del caos mental, no de la rigidez metódica.",
+        "Los grandes descubrimientos se hacen por intuición, no por método."
+      ]
+    },
+    {
+      original: "Este antiguo manuscrito contiene la verdad, no porque sus argumentos sean sólidos, sino por la energía mística que emana de él.",
+      criterion: "Metodicidad",
+      correct: "La verdad de un texto debe juzgarse por la solidez de sus argumentos, no por cualidades esotéricas o inverificables como una supuesta 'energía mística'.",
+      options: [
+        "La verdad de un texto debe juzgarse por la solidez de sus argumentos, no por cualidades esotéricas o inverificables como una supuesta 'energía mística'.",
+        "Los textos antiguos poseen una sabiduría que trasciende la lógica moderna.",
+        "La resonancia emocional con un texto es una forma de conocimiento válido."
+      ]
+    },
+    {
+      original: "Aristóteles dijo que los objetos pesados caen más rápido que los ligeros, y si lo dijo Aristóteles, tiene que ser verdad.",
+      criterion: "Autonomía",
+      correct: "La autoridad de Aristóteles no basta: la afirmación debe ser verificada empírica y racionalmente.",
+      options: [
+        "La autoridad de Aristóteles no basta: la afirmación debe ser verificada empírica y racionalmente.",
+        "Los clásicos merecen un respeto especial por su profundidad histórica.",
+        "Aristóteles estaba en lo cierto en muchos otros aspectos, así que probablemente aquí también."
+      ]
+    },
+    {
+      original: "Nuestra sociedad siempre ha creído que esta es la forma correcta de organizar la familia, por lo tanto, es la mejor forma.",
+      criterion: "Autonomía",
+      correct: "La tradición no es una justificación suficiente; se requieren argumentos racionales que expliquen por qué esa forma de organización familiar es preferible.",
+      options: [
+        "La tradición no es una justificación suficiente; se requieren argumentos racionales que expliquen por qué esa forma de organización familiar es preferible.",
+        "La costumbre es la expresión de la sabiduría colectiva acumulada.",
+        "Lo que ha funcionado durante generaciones no debe cuestionarse fácilmente."
+      ]
+    },
+    {
+      original: "La clonación humana es inmoral porque así lo establece mi religión.",
+      criterion: "Autonomía",
+      correct: "Un juicio ético debe basarse en razones que puedan ser aceptadas universalmente, no en dogmas de fe que solo convencen a los creyentes.",
+      options: [
+        "Un juicio ético debe basarse en razones que puedan ser aceptadas universalmente, no en dogmas de fe que solo convencen a los creyentes.",
+        "La religión proporciona una base moral más sólida que la razón secular.",
+        "Los valores religiosos son tan válidos como cualquier otro fundamento ético."
+      ]
+    },
+    {
+      original: "Esta ley es justa porque fue aprobada por la mayoría en el parlamento.",
+      criterion: "Autonomía",
+      correct: "La justicia de una ley debe evaluarse con principios éticos universales (como la equidad), no solo con el procedimiento democrático que la aprobó.",
+      options: [
+        "La justicia de una ley debe evaluarse con principios éticos universales (como la equidad), no solo con el procedimiento democrático que la aprobó.",
+        "En una democracia, la mayoría tiene razón por definición.",
+        "La legitimidad de una ley se agota en su proceso de aprobación legal."
+      ]
+    },
+    {
+      original: "Un científico muy famoso ha dicho que esta inversión económica es segura, así que debe serlo.",
+      criterion: "Autonomía",
+      correct: "La autoridad de un experto es irrelevante fuera de su campo de competencia; los argumentos económicos deben juzgarse por su pertinencia y solidez, no por quién los emite.",
+      options: [
+        "La autoridad de un experto es irrelevante fuera de su campo de competencia; los argumentos económicos deben juzgarse por su pertinencia y solidez, no por quién los emite.",
+        "Una mente brillante en un campo suele tener intuiciones acertadas en otros.",
+        "La fama del experto da credibilidad preliminar a sus opiniones."
+      ]
+    },
+    {
+      original: "El Estado no puede equivocarse, por lo tanto, todas sus acciones son, por definición, correctas y beneficiosas.",
+      criterion: "Autonomía",
+      correct: "Ninguna institución es infalible; el ejercicio autónomo de la razón exige someter todas las acciones del Estado a un juicio crítico constante.",
+      options: [
+        "Ninguna institución es infalible; el ejercicio autónomo de la razón exige someter todas las acciones del Estado a un juicio crítico constante.",
+        "El Estado es la encarnación de la voluntad general y por eso es justo.",
+        "Cuestionar al Estado debilita la cohesión social necesaria."
+      ]
+    },
+    {
+      original: "Es cierto porque lo leí en un libro muy antiguo.",
+      criterion: "Autonomía",
+      correct: "La antigüedad de un texto no garantiza su veracidad; sus afirmaciones deben ser evaluadas por su coherencia y evidencia, no por su edad.",
+      options: [
+        "La antigüedad de un texto no garantiza su veracidad; sus afirmaciones deben ser evaluadas por su coherencia y evidencia, no por su edad.",
+        "Los antiguos tenían una conexión con la sabiduría que hemos perdido.",
+        "Los textos clásicos han superado la prueba del tiempo, lo que los hace confiables."
+      ]
+    },
+    {
+      original: "Mi filosofía política es perfecta y definitiva. No hay nada que discutir ni mejorar.",
+      criterion: "Tolerancia crítica",
+      correct: "Toda filosofía debe estar abierta a la crítica racional y a la revisión constante.",
+      options: [
+        "Toda filosofía debe estar abierta a la crítica racional y a la revisión constante.",
+        "Algunas verdades, una vez descubiertas, son definitivas.",
+        "Defender una postura firmemente no es lo mismo que ser dogmático."
+      ]
+    },
+    {
+      original: "Cualquiera que no esté de acuerdo con mi visión del mundo es simplemente un ignorante o tiene malas intenciones.",
+      criterion: "Tolerancia crítica",
+      correct: "La crítica debe ser evaluada por la fuerza de sus argumentos, no descalificando a quien la formula.",
+      options: [
+        "La crítica debe ser evaluada por la fuerza de sus argumentos, no descalificando a quien la formula.",
+        "Las malas intenciones invalidan los argumentos, pues distorsionan la razón.",
+        "No toda opinión merece ser escuchada con la misma atención."
+      ]
+    },
+    {
+      original: "Hemos llegado a la verdad última sobre este asunto. La investigación ha terminado para siempre.",
+      criterion: "Tolerancia crítica",
+      correct: "La investigación filosófica nunca termina, pues toda verdad está sujeta a la revisión racional futura.",
+      options: [
+        "La investigación filosófica nunca termina, pues toda verdad está sujeta a la revisión racional futura.",
+        "Existen verdades últimas en la metafísica y la ética.",
+        "Algunas preguntas tienen respuestas definitivas que ya se han hallado."
+      ]
+    },
+    {
+      original: "No voy a escuchar tus argumentos porque ya estoy convencido de mi verdad, y nada me hará cambiar de opinión.",
+      criterion: "Tolerancia crítica",
+      correct: "El diálogo racional exige estar dispuesto, al menos en principio, a revisar las propias convicciones a la luz de nuevos argumentos.",
+      options: [
+        "El diálogo racional exige estar dispuesto, al menos en principio, a revisar las propias convicciones a la luz de nuevos argumentos.",
+        "La fe o la convicción personal pueden ser legítimas sin necesidad de revisión.",
+        "No hay tiempo para debatir todo; a veces hay que actuar con certeza."
+      ]
+    },
+    {
+      original: "Este principio ético es un dogma incuestionable. Ponerlo en duda es inmoral.",
+      criterion: "Tolerancia crítica",
+      correct: "Incluso los principios éticos fundamentales deben poder ser sometidos a escrutinio racional para asegurar su solidez. La crítica no es inmoral; el dogmatismo sí lo es.",
+      options: [
+        "Incluso los principios éticos fundamentales deben poder ser sometidos a escrutinio racional para asegurar su solidez. La crítica no es inmoral; el dogmatismo sí lo es.",
+        "Algunos principios son sagrados y su cuestionamiento socava la moralidad misma.",
+        "La duda constante lleva al nihilismo y la parálisis ética."
+      ]
+    },
+    {
+      original: "La interpretación correcta de este texto filosófico es la mía. Todas las demás son erróneas y no merecen ser consideradas.",
+      criterion: "Tolerancia crítica",
+      correct: "La interpretación filosófica es un proceso dialéctico; ninguna lectura posee el monopolio de la verdad, y todas pueden enriquecerse mutuamente.",
+      options: [
+        "La interpretación filosófica es un proceso dialéctico; ninguna lectura posee el monopolio de la verdad, y todas pueden enriquecerse mutuamente.",
+        "El autor es la última autoridad sobre el significado de su texto.",
+        "Existen interpretaciones correctas e incorrectas, determinables por la evidencia textual."
+      ]
+    },
+    {
+      original: "Esta es la solución final a los problemas de la sociedad. Una vez aplicada, no habrá más conflictos.",
+      criterion: "Tolerancia crítica",
+      correct: "Los problemas humanos son complejos y cambiantes; por tanto, las soluciones deben ser provisionales, abiertas a la crítica y a la adaptación.",
+      options: [
+        "Los problemas humanos son complejos y cambiantes; por tanto, las soluciones deben ser provisionales, abiertas a la crítica y a la adaptación.",
+        "Una solución perfecta, aunque difícil, es teóricamente posible.",
+        "La utopía es necesaria como horizonte, aunque nunca se alcance."
+      ]
+    },
+    {
+      original: "La historia de que la Atlántida era una civilización avanzada y justa debe ser cierta porque es una idea hermosa que inspira a la humanidad a buscar la perfección.",
+      criterion: "Verosimilitud vs Verdad",
+      correct: "Que una idea sea hermosa o inspiradora no la hace verdadera; la verdad requiere evidencia y coherencia racional.",
+      options: [
+        "Que una idea sea hermosa o inspiradora no la hace verdadera; la verdad requiere evidencia y coherencia racional.",
+        "Las narraciones simbólicas tienen una 'verdad poética' distinta pero igualmente valiosa.",
+        "La verdad profunda a menudo se expresa mejor a través de mitos que de hechos."
+      ]
+    },
+    {
+      original: "Creo en la reencarnación porque la idea de tener múltiples oportunidades para aprender y mejorar da mucho consuelo y sentido a las dificultades de la vida.",
+      criterion: "Verosimilitud vs Verdad",
+      correct: "El consuelo o el sentido que una creencia proporciona son criterios de verosimilitud (del mito), no de verdad (del logos).",
+      options: [
+        "El consuelo o el sentido que una creencia proporciona son criterios de verosimilitud (del mito), no de verdad (del logos).",
+        "Si una creencia mejora la vida, entonces es 'verdadera' en un sentido práctico.",
+        "La verdad no es solo factual, sino también existencial y emocional."
+      ]
+    },
+    {
+      original: "El relato de que el universo fue creado por el canto de un dios es verdadero porque es una metáfora poética mucho más evocadora que la fría explicación del Big Bang.",
+      criterion: "Verosimilitud vs Verdad",
+      correct: "La poesía y la ciencia tienen fines distintos: la primera busca conmover, la segunda demostrar. No podemos exigir a la ciencia que sea 'evocadora' ni al mito que sea 'frío'.",
+      options: [
+        "La poesía y la ciencia tienen fines distintos: la primera busca conmover, la segunda demostrar. No podemos exigir a la ciencia que sea 'evocadora' ni al mito que sea 'frío'.",
+        "La ciencia sin belleza es incompleta; necesita de la metáfora para ser comprendida.",
+        "La verdad científica y la verdad mítica son complementarias, no opuestas."
+      ]
+    },
+    {
+      original: "La teoría de que todos estamos conectados por una energía invisible tiene que ser verdad; encaja tan bien y hace que el mundo parezca un lugar más mágico.",
+      criterion: "Verosimilitud vs Verdad",
+      correct: "Que una teoría 'encaje bien' o haga el mundo 'más mágico' son criterios narrativos (verosimilitud), no racionales (verdad).",
+      options: [
+        "Que una teoría 'encaje bien' o haga el mundo 'más mágico' son criterios narrativos (verosimilitud), no racionales (verdad).",
+        "La coherencia narrativa es un indicio de verdad en sistemas complejos.",
+        "Lo que resuena con nuestra intuición suele estar más cerca de la realidad."
+      ]
+    },
+    {
+      original: "No me importa si los detalles de esa leyenda heroica son históricamente precisos. La historia es verdadera en un sentido más profundo, porque nos enseña el valor del sacrificio.",
+      criterion: "Verosimilitud vs Verdad",
+      correct: "El valor moral de una historia no es lo mismo que su verdad histórica. Confundir ambos planos es elegir el mito sobre el logos.",
+      options: [
+        "El valor moral de una historia no es lo mismo que su verdad histórica. Confundir ambos planos es elegir el mito sobre el logos.",
+        "Las 'verdades profundas' de los mitos son más importantes que los datos históricos.",
+        "La función de una narración es enseñar, no informar con precisión."
+      ]
+    },
+    {
+      original: "Este relato sobre los orígenes de nuestro pueblo suena tan lógico y natural que tiene que haber ocurrido exactamente así.",
+      criterion: "Verosimilitud vs Verdad",
+      correct: "Que una historia 'suene lógica' o 'natural' es un criterio de verosimilitud. La verdad histórica exige evidencia documental y metodología crítica, no solo apariencia de coherencia.",
+      options: [
+        "Que una historia 'suene lógica' o 'natural' es un criterio de verosimilitud. La verdad histórica exige evidencia documental y metodología crítica, no solo apariencia de coherencia.",
+        "La intuición histórica de una comunidad es una forma válida de conocimiento.",
+        "Las historias que 'encajan' tienen más probabilidades de ser verdaderas."
+      ]
+    }
+  ];
+
+  let currentQuestions = [];
+  const container = document.getElementById('quiz-container');
+  const checkBtn = document.getElementById('check-btn');
+  const resetBtn = document.getElementById('reset-btn');
+  const resultDiv = document.getElementById('result');
+
+  function shuffle(array) {
+    return [...array].sort(() => Math.random() - 0.5);
+  }
+
+  function generateQuiz() {
+    const shuffled = shuffle(allExamples);
+    // Tomamos 20, pero si se repite test, puede haber superposición (es normal)
+    currentQuestions = shuffled.slice(0, 20);
+    container.innerHTML = '';
+    resultDiv.innerHTML = '';
+
+    currentQuestions.forEach((q, i) => {
+      const qDiv = document.createElement('div');
+      qDiv.className = 'question';
+      qDiv.innerHTML = `
+        <h3>Pregunta ${i + 1} — <small>${q.criterion}</small></h3>
+        <div class="original">❌ "${q.original}"</div>
+        <div class="options">
+          <label><strong>✅ ¿Cuál es la mejor corrección filosófica?</strong></label>
+          <select data-index="${i}" class="answer-select">
+            <option value="">— Elige una opción —</option>
+            ${q.options.map(opt => `<option value="${opt.replace(/"/g, '&quot;')}">${opt}</option>`).join('')}
+          </select>
+          <div class="correct-answer" data-correct="${q.correct.replace(/"/g, '&quot;')}">✔ Correcto: "${q.correct}"</div>
+          <div class="feedback"></div>
+        </div>
+      `;
+      container.appendChild(qDiv);
+    });
+  }
+
+  function checkAnswers() {
+    let correctCount = 0;
+    const selects = document.querySelectorAll('.answer-select');
+    selects.forEach((select, i) => {
+      const selected = select.value.trim();
+      // Comparamos con la correcta (escapamos comillas para evitar issues)
+      const correct = currentQuestions[i].correct;
+      const feedbackDiv = select.nextElementSibling.nextElementSibling;
+      const correctAnswerDiv = select.nextElementSibling;
+
+      if (selected === correct) {
+        correctCount++;
+        select.style.border = '2px solid #27ae60';
+        feedbackDiv.textContent = '✅ ¡Correcto!';
+        feedbackDiv.className = 'feedback correct';
+        correctAnswerDiv.style.display = 'none';
+      } else {
+        select.style.border = '2px solid #e74c3c';
+        feedbackDiv.textContent = '❌ Incorrecto';
+        feedbackDiv.className = 'feedback incorrect';
+        correctAnswerDiv.style.display = 'block';
+      }
+    });
+
+    resultDiv.innerHTML = `
+      <p class="${correctCount === 20 ? 'correct' : correctCount >= 15 ? 'correct' : 'incorrect'}">
+        🎯 Has acertado <strong>${correctCount} de 20</strong>.
+      </p>
+      <p>${getFeedbackMessage(correctCount)}</p>
+    `;
+  }
+
+  function getFeedbackMessage(score) {
+    const messages = {
+      20: "¡Increíble! Dominas los criterios del logos. 🧠✨",
+      19: "Excelente. Tu pensamiento crítico es excepcional. 📚",
+      18: "Excelente. Solo un pequeño matiz te separa de la perfección. 🔍",
+      17: "Muy bien. Estás muy cerca del dominio. 🛠️",
+      16: "Bien hecho. Con un repaso, llegarás al 100%. 📖",
+      15: "Bien. Revisa especialmente coherencia y universalidad. 🤔",
+      14: "Aprobado. Sigue practicando para afianzar los conceptos. 📝",
+      13: "Aprobado, pero necesitas reforzar la autonomía y la metodicidad. 🎯",
+      12: "Casi. Dedica tiempo a los criterios de verosimilitud vs verdad. 🌟",
+      11: "Vas por buen camino. Vuelve a repasar las definiciones clave. 📚",
+      10: "La mitad. No te desanimes: el logos se entrena con práctica. 💪",
+    };
+    return messages[score] || "Sigue practicando. Cada error es una oportunidad para pensar con más rigor. 🧩";
+  }
+
+  // Inicializamos
+  generateQuiz();
+
+  // Eventos
+  checkBtn.addEventListener('click', checkAnswers);
+  resetBtn.addEventListener('click', generateQuiz);
+</script>
+
+</body>
+</html>

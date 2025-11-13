@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta name="author" content="Miguel Navas Chinchilla">
+<meta name="generator" content="Filosofía, Multimedia">
+<meta name="version" content="1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Apoyo Multimedia – Filosofía</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9f7f0;
+      color: #333;
+      line-height: 1.6;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background-color: #e8f5e9;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #2e7d32;
+      font-size: 2rem;
+    }
+    .back-btn {
+      display: inline-block;
+      background-color: #607d8b;
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .back-btn:hover {
+      background-color: #455a64;
+    }
+
+    /* Estilo responsive para iframes */
+    .video-container {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%; /* 16:9 aspect ratio (9 ÷ 16 = 0.5625) */
+      height: 0;
+      margin-bottom: 30px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .section {
+      background-color: white;
+      padding: 20px;
+      margin-bottom: 25px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #1b5e20;
+      margin-bottom: 16px;
+      font-size: 1.4rem;
+      border-left: 4px solid #81c784;
+      padding-left: 10px;
+    }
+    p {
+      margin-bottom: 12px;
+      color: #555;
+    }
+
+    @media (max-width: 600px) {
+      .back-btn {
+        padding: 8px 16px;
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="Filosofia.html" class="back-btn">⬅️ Volver a Filosofía</a>
+    <h1>🎧 Apoyo Multimedia</h1>
+    <p>Recursos audiovisuales para reforzar los contenidos del primer trimestre</p>
+  </header>
+
+  <div class="section">
+    <h2>🎥 Vídeo explicativo</h2>
+    <p>Resumen visual y dinámico de los conceptos clave: argumentación, falacias y estructura del pensamiento filosófico.</p>
+    <div class="video-container">
+      <iframe 
+        src="https://mega.nz/embed/ElxUhJAI#0wPXKXH1f50ia63sCLDMexr9ca4UnHrxIUM1TiHVSGo" 
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🎙️ Podcast de análisis</h2>
+    <p>Conversación guiada sobre frases problemáticas y cómo corregirlas desde una perspectiva lógica y conceptual.</p>
+    <div class="video-container">
+      <iframe 
+        src="https://mega.nz/embed/J94mUZhB#n7KPVs7gn8PtpHf9JrbUnWLK89tfbVm0Nhp5c_goWhA" 
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+
+  <p style="text-align: center; font-size: 0.9rem; color: #777; margin-top: 20px;">
+    ℹ️ Los contenidos se reproducen directamente desde Mega. Asegúrate de tener conexión estable.
+  </p>
+</body>
+</html>
